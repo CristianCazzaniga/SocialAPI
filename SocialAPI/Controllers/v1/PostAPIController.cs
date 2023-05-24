@@ -23,11 +23,13 @@ namespace SocialAPI.Controllers.v1
     {
         protected APIResponse _response;
         private readonly IPostRepostitory _dbPost;
+        private readonly ISeguiRepository _dbSegui;
         private readonly IUserRepository _dbUser;
         private readonly IMapper _mapper;
-        public PostAPIController(IPostRepostitory dbPost, IUserRepository dbuser, IMapper mapper)
+        public PostAPIController(IPostRepostitory dbPost, ISeguiRepository dbSegui, IUserRepository dbuser, IMapper mapper)
         {
             _dbPost = dbPost;
+            _dbSegui = dbSegui;
             _mapper = mapper;
             _dbUser = dbuser;
             _response = new();
@@ -63,7 +65,50 @@ namespace SocialAPI.Controllers.v1
             return _response;
 
         }
+        [HttpGet("GetPostUtentiSeguiti")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<APIResponse>> GetPostUtenti()
+        {
+            try
+            {
+                var claimsIdentity = User.Identity as ClaimsIdentity;
+                if (claimsIdentity != null)
+                {
+                    var NamesIdentifier = claimsIdentity.FindFirst(ClaimTypes.Name);
+                    if (NamesIdentifier != null)
+                    {
+                        string Username = NamesIdentifier.Value;
+                        if (Username != null)
+                        {
+                            ApplicationUser user = await _dbUser.GetAsync(u => u.UserName == Username);
+                            IEnumerable<Segui> seguiti = await _dbSegui.GetAllAsync(s=>s.Follower==user.Id);
+                            List<Post> posts = new List<Post>();
+                            foreach (var item in seguiti)
+                            {
+                                IEnumerable<Post> postUt = await _dbPost.GetAllAsync(s => s.fk_user ==item.Seguito);
+                                posts.AddRange(postUt);
+                            }           
+                            _response.Result = _mapper.Map<IEnumerable<PostDTO>>(posts);
+                            _response.StatusCode = HttpStatusCode.Created;
+                            return Ok(_response);
 
+                        }
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages
+                     = new List<string>() { ex.ToString() };
+            }
+            return _response;
+
+        }
 
         [Authorize]
         [HttpPost("CreaPost")]
