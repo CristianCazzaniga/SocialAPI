@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Text.Json;
 using System.Security.Claims;
+using System.ComponentModel;
 
 namespace SocialAPI.Controllers.v1
 {
@@ -32,7 +33,7 @@ namespace SocialAPI.Controllers.v1
             _response = new();
         }
 
-        [HttpGet]
+        [HttpGet("GetPostUtente")]
         [ResponseCache(CacheProfileName = "Default30")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -65,7 +66,7 @@ namespace SocialAPI.Controllers.v1
 
 
         [Authorize]
-        [HttpPost]
+        [HttpPost("CreaPost")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -116,7 +117,7 @@ namespace SocialAPI.Controllers.v1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpDelete("{id:int}", Name = "DeletePost")]
+        [HttpDelete("EliminaPost")]
         public async Task<ActionResult<APIResponse>> DeletePost(int id)
         {
             try
@@ -162,7 +163,7 @@ namespace SocialAPI.Controllers.v1
             return _response;
         }
         [Authorize]
-        [HttpPut("{id:int}", Name = "UpdatePost")]
+        [HttpPut("AggiornaPost")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<APIResponse>> UpdateVilla(int id, [FromBody] PostUpdateDTO updateDTO)

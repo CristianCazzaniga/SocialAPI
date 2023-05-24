@@ -32,7 +32,7 @@ namespace SocialAPI.Controllers.v1
             _response = new();
         }
 
-        [HttpGet]
+        [HttpGet("GetStorieUtente")]
         [ResponseCache(CacheProfileName = "Default30")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -65,7 +65,7 @@ namespace SocialAPI.Controllers.v1
 
 
         [Authorize]
-        [HttpPost]
+        [HttpPost("CreaStoria")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -117,7 +117,7 @@ namespace SocialAPI.Controllers.v1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpDelete("{id:int}", Name = "DeleteStoria")]
+        [HttpDelete("EliminaStoria")]
         public async Task<ActionResult<APIResponse>> DeleteStoria(int id)
         {
             try
