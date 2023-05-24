@@ -38,7 +38,10 @@ builder.Services.AddVersionedApiExplorer(options =>
     options.GroupNameFormat = "'v'VVV";
     options.SubstituteApiVersionInUrl = true;
 });
-
+builder.Services.AddCors(p => p.AddPolicy("corspolicy", build =>
+{
+    build.WithOrigins("https://localhost:7104", "http://127.0.0.1:5215").AllowAnyMethod().AllowAnyHeader();
+}));
 
 var key = builder.Configuration.GetValue<string>("ApiSettings:Secret");
 
@@ -143,7 +146,7 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/swagger/v2/swagger.json", "Social_ApiV2");
     });
 }
-
+app.UseCors("corspolicy");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

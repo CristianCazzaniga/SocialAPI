@@ -166,7 +166,7 @@ namespace SocialAPI.Controllers.v1
         [HttpPut("AggiornaPost")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<APIResponse>> UpdateVilla(int id, [FromBody] PostUpdateDTO updateDTO)
+        public async Task<ActionResult<APIResponse>> UpdatePost(int id, [FromBody] PostUpdateDTO updateDTO)
         {
 
             try
