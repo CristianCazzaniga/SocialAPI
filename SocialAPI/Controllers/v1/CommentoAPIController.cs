@@ -185,5 +185,61 @@ namespace SocialAPI.Controllers.v1
             }
             return _response;
         }
+        [Authorize]
+        [HttpPut("AggiornaCommento")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<APIResponse>> UpdatePost(int id, [FromBody] PostUpdateDTO updateDTO)
+        {
+
+            try
+            {
+                var claimsIdentity = User.Identity as ClaimsIdentity;
+                if (claimsIdentity != null)
+                {
+                    var NamesIdentifier = claimsIdentity.FindFirst(ClaimTypes.Name);
+                    if (NamesIdentifier != null)
+                    {
+                        string Username = NamesIdentifier.Value;
+                        if (Username != null)
+                        {
+                            ApplicationUser user = await _dbUser.GetAsync(u => u.UserName == Username);
+                            Commento commento = await _dbCommento.GetAsync(u => u.Id == id && u.fk_user == user.Id);
+                            if (commento != null)
+                            {
+                                if (updateDTO == null)
+                                {
+                                    return BadRequest();
+                                }
+                                commento.Contenuto = updateDTO.Contenuto;
+
+                                await _dbCommento.UpdateAsync(commento);
+                                _response.StatusCode = HttpStatusCode.NoContent;
+                                _response.IsSuccess = true;
+                                return Ok(_response);
+                            }
+                            else
+                            {
+                                return NotFound();
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    return NotFound();
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages
+                     = new List<string>() { ex.ToString() };
+            }
+            return _response;
+        }
+
     }
 }
