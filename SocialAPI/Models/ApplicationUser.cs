@@ -11,6 +11,5 @@ namespace SocialAPI.Models
         public virtual ICollection<Commento> Commenti { get; set; } = new List<Commento>();
         public virtual ICollection<Like> Likes { get; set; } = new List<Like>();
         public virtual ICollection<Messaggio> MessaggiMandati { get; set; } = new List<Messaggio>();
-        public virtual ICollection<Segnalazione> SegnalazioniRicevute { get; set; } = new List<Segnalazione>();
     }
 }
