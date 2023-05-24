@@ -4,8 +4,8 @@ namespace SocialAPI.Models.Dto
 {
     public class StoriaDTO
     {
+        public int Id { get; set; }
         public string Media { get; set; } = null!;
-        public string Contenuto { get; set; } = null!;
         public DateTime DataPubblicazione { get; set; }
     }
 }

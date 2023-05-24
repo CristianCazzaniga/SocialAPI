@@ -4,13 +4,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SocialAPI.Models
 {
-    public class CommentoDTO
+    public class CreateCommentoDTO
     {
-        public int Id { get; set; }
-        public string Username { get; set; } = null!;
         public string Contenuto { get; set; } = null!;
-        public DateTime DataPubblicazione { get; set; }
-        public DateTime DataModifica { get; set; }
     }
 
 }

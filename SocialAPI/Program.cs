@@ -23,6 +23,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddResponseCaching();
 builder.Services.AddScoped<IPostRepostitory, PostRepository>();
+builder.Services.AddScoped<ICommentoRepostitory, CommentoRepository>();
 builder.Services.AddScoped<IStoriaRepostitory, StoriaRepository>();
 builder.Services.AddScoped<ISeguiRepository, SeguiRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
