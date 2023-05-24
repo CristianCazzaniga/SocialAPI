@@ -9,6 +9,7 @@ namespace SocialAPI.Models
         public int Id { get; set; }
         public string Contenuto { get; set; } = null!;
         public DateTime DataPubblicazione { get; set; }
+        public DateTime DataModifica { get; set; }
         public string fk_user { get; set; } = null!;
         [ForeignKey(nameof(fk_user))]
         public ApplicationUser ApplicationUser { get; set; } = null!;
