@@ -17,6 +17,6 @@ namespace SocialAPI.Models
         public int fk_post { get; set; }
         [ForeignKey(nameof(fk_post))]
         public Post Post { get; set; } = null!;
-        public virtual ICollection<Like> Likes { get; set; } = new List<Like>();
+        public virtual ICollection<LikeDTO> Likes { get; set; } = new List<LikeDTO>();
     }
 }

@@ -12,7 +12,7 @@ namespace SocialAPI.Models
         public string fk_user { get; set; } = null!;
         [ForeignKey(nameof(fk_user))]
         public ApplicationUser ApplicationUser { get; set; } = null!;
-        public virtual ICollection<Like> Likes { get; set; } = new List<Like>();
+        public virtual ICollection<LikeDTO> Likes { get; set; } = new List<LikeDTO>();
         public virtual ICollection<Commento> Commenti { get; set; } = new List<Commento>();
 
     }
