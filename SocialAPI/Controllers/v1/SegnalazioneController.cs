@@ -19,25 +19,26 @@ namespace SocialAPI.Controllers.v1
     [Route("api/v{version:apiVersion}/FollowAPI")]
     [ApiController]
     [ApiVersion("1.0")]
-    public class SeguiController : ControllerBase
+    public class SegnalazioneController : ControllerBase
     {
         protected APIResponse _response;
-        private readonly ISeguiRepository _dbSegui;
+        private readonly ISegnalazioneRepository _dbSegnala;
         private readonly IUserRepository _dbUser;
         private readonly IMapper _mapper;
-        public SeguiController(ISeguiRepository dbSegui, IUserRepository dbuser, IMapper mapper)
+        public SegnalazioneController(ISegnalazioneRepository dbSegnala, IUserRepository dbuser, IMapper mapper)
         {
-            _dbSegui = dbSegui;
+            _dbSegnala = dbSegnala;
             _mapper = mapper;
             _dbUser = dbuser;
             _response = new();
         }
-        [HttpGet("GetFollower")]
+        [Authorize(Roles = "admin")]
+        [HttpGet("GetReportUtenteAdmin")]
         [ResponseCache(CacheProfileName = "Default30")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<APIResponse>> GetFollowerUtente(string username)
+        public async Task<ActionResult<APIResponse>> GetReportUtenteAdmin(string username)
         {
             try
             {
@@ -46,15 +47,15 @@ namespace SocialAPI.Controllers.v1
                 {
                     return NotFound();
                 }
-                IEnumerable<Segui> seguiList;
-                seguiList = await _dbSegui.GetAllAsync(u => u.Seguito == user.Id);
-                List<string> ListaFollower = new List<string>();
-                foreach (var item in seguiList)
+                IEnumerable<Segnalazione> segnalazioneList;
+                segnalazioneList = await _dbSegnala.GetAllAsync(u => u.fk_UtenteSegnalato == user.Id);
+                List<SegnalazioneDTO> listaSegnalazioni = new List<SegnalazioneDTO>();
+                foreach (var item in segnalazioneList)
                 {
-                    ApplicationUser userFollower = await _dbUser.GetAsync(u => u.Id == item.Follower);
-                    ListaFollower.Add(userFollower.UserName);
+                    ApplicationUser userSegnalante = await _dbUser.GetAsync(u => u.Id == item.fk_UtenteRichiedente);
+                    listaSegnalazioni.Add(new SegnalazioneDTO() { Id=item.Id, Motivazione=item.Motivazione, utenteRichiedente= userSegnalante.UserName, utenteSegnalato=user.UserName});
                 };
-                _response.Result = (ListaFollower);
+                _response.Result = (listaSegnalazioni);
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
 
@@ -69,53 +70,16 @@ namespace SocialAPI.Controllers.v1
 
         }
 
-        [HttpGet("GetSeguiti")]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<APIResponse>> GetSeguitiUtente(string username)
-        {
-            try
-            {
-                ApplicationUser user = await _dbUser.GetAsync(u => u.UserName == username);
-                if (user == null)
-                {
-                    return NotFound();
-                }
-                IEnumerable<Segui> seguiList;
-                seguiList = await _dbSegui.GetAllAsync(u => u.Follower == user.Id);
-                List<string> ListaSeguiti = new List<string>();
-                foreach (var item in seguiList)
-                {
-                    ApplicationUser userSeguito = await _dbUser.GetAsync(u => u.Id == item.Seguito);
-                    ListaSeguiti.Add(userSeguito.UserName);
-                };
-                _response.Result = (ListaSeguiti);
-                _response.StatusCode = HttpStatusCode.OK;
-                return Ok(_response);
-
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.ErrorMessages
-                     = new List<string>() { ex.ToString() };
-            }
-            return _response;
-
-        }
         [Authorize]
-        [HttpPost("SeguiUtente")]
+        [HttpPost("SegnalaUtente")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<APIResponse>> Segui(string utenteDaSeguire)
+        public async Task<ActionResult<APIResponse>> SegnalaUtente(string utenteDaSegnalare, CreateSegnalazioneDTO segnalazioneDTO)
         {
             try
             {
-                if (utenteDaSeguire == null)
+                if (utenteDaSegnalare == null)
                 {
                     return BadRequest();
                 }
@@ -128,23 +92,24 @@ namespace SocialAPI.Controllers.v1
                         string Username = NamesIdentifier.Value;
                         if (Username != null)
                         {
-                            ApplicationUser userCheSegue = await _dbUser.GetAsync(u => u.UserName == Username);
-                            ApplicationUser userSeguito = await _dbUser.GetAsync(u => u.UserName == utenteDaSeguire);
-                            Segui seguito = await _dbSegui.GetAsync(s => s.Follower == userCheSegue.Id && s.Seguito == userSeguito.Id);
-                            if (seguito == null)
+                            ApplicationUser userCheSegnala = await _dbUser.GetAsync(u => u.UserName == Username);
+                            ApplicationUser userdaSegnalare = await _dbUser.GetAsync(u => u.UserName == utenteDaSegnalare);
+                            Segnalazione segnalato = await _dbSegnala.GetAsync(s => s.fk_UtenteRichiedente == userCheSegnala.Id && s.fk_UtenteSegnalato == userdaSegnalare.Id);
+                            if (segnalato == null)
                             {
-                                Segui follow = new Segui() { Follower = userCheSegue.Id, Seguito = userSeguito.Id };
-                                await _dbSegui.CreateAsync(follow);
-                                _response.Result = new SeguiDTO() { FollowerNome = userCheSegue.UserName, SeguitoNome = userSeguito.Name };
+                                Segnalazione segnalazione = new Segnalazione() { fk_UtenteRichiedente= userCheSegnala.Id, fk_UtenteSegnalato=userdaSegnalare.Id, Motivazione= segnalazioneDTO.Motivazione };
+                                await _dbSegnala.CreateAsync(segnalazione);
+                                _response.Result = new SegnalazioneDTO() { Id= segnalazione.Id, Motivazione=segnalazione.Motivazione, utenteRichiedente= userCheSegnala.UserName, utenteSegnalato= userdaSegnalare.UserName};
                                 _response.StatusCode = HttpStatusCode.Created;
                                 return Ok(_response);
                             }
-                            return Ok();
-
+                            else
+                            {
+                                return Ok("segnalazione già mandata");
+                            }
                         }
                     }
                 }
-
             }
             catch (Exception ex)
             {
@@ -155,50 +120,26 @@ namespace SocialAPI.Controllers.v1
             return _response;
         }
 
-        [Authorize]
+        [Authorize(Roles ="admin")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpDelete("UnfollowUtente")]
-        public async Task<ActionResult<APIResponse>> DeleteSegui(string UtenteDaUnfolloware)
+        [HttpDelete("ElimnaSegnalazioneAdmin")]
+        public async Task<ActionResult<APIResponse>> ElimnaSegnalazioneAdmin(int id)
         {
             try
             {
-                if (UtenteDaUnfolloware == null)
+                Segnalazione segnalazione = await _dbSegnala.GetAsync(s=>s.Id==id);
+                if (segnalazione==null)
                 {
-                    return BadRequest();
+                    return NotFound();
                 }
-                var claimsIdentity = User.Identity as ClaimsIdentity;
-                if (claimsIdentity != null)
-                {
-                    var NamesIdentifier = claimsIdentity.FindFirst(ClaimTypes.Name);
-                    if (NamesIdentifier != null)
-                    {
-                        string Username = NamesIdentifier.Value;
-                        if (Username != null)
-                        {
-                            ApplicationUser user = await _dbUser.GetAsync(u => u.UserName == Username);
-                            ApplicationUser userUn = await _dbUser.GetAsync(u => u.UserName == UtenteDaUnfolloware);
-                            Segui segui = await _dbSegui.GetAsync(s => s.Follower == user.Id && s.Seguito == userUn.Id);
-
-                            if (segui == null)
-                            {
-                                return NotFound();
-                            }
-                            await _dbSegui.RemoveAsync(segui);
-                            _response.StatusCode = HttpStatusCode.NoContent;
-                            _response.IsSuccess = true;
-                            return Ok(_response);
-
-                        }
-                    }
-                    else
-                    {
-                        return NotFound();
-                    }
-                }
+                await _dbSegnala.RemoveAsync(segnalazione);
+                _response.StatusCode = HttpStatusCode.NoContent;
+                _response.IsSuccess = true;
+                return Ok(_response);              
             }
             catch (Exception ex)
             {
@@ -208,9 +149,5 @@ namespace SocialAPI.Controllers.v1
             }
             return _response;
         }
-
-
-
-
     }
 }

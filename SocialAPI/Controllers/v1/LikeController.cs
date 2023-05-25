@@ -27,11 +27,13 @@ namespace SocialAPI.Controllers.v1
         private readonly IPostRepostitory _dbPost;
         private readonly ICommentoRepostitory _dbCommento;
         private readonly IStoriaRepostitory _dbStoria;
+        private readonly IMessaggioRepository _dbMessaggio;
         private readonly IUserRepository _dbUser;
         private readonly IMapper _mapper;
-        public LikeController(ILikeRepostitory dbLike, IPostRepostitory dbPost, ICommentoRepostitory dbCommento, IStoriaRepostitory dbStoria, IUserRepository dbuser, IMapper mapper)
+        public LikeController(ILikeRepostitory dbLike, IPostRepostitory dbPost, IMessaggioRepository dbMessaggio, ICommentoRepostitory dbCommento, IStoriaRepostitory dbStoria, IUserRepository dbuser, IMapper mapper)
         {
             _dbLike = dbLike;
+            _dbMessaggio= dbMessaggio;
             _dbPost = dbPost;
             _dbCommento = dbCommento;
             _dbStoria= dbStoria;
@@ -111,6 +113,44 @@ namespace SocialAPI.Controllers.v1
             }
             return _response;
         }
+
+        [HttpGet("GetLikeMessaggio")]
+        [ResponseCache(CacheProfileName = "Default30")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<APIResponse>> GetLikeMessaggio(int id)
+        {
+            try
+            {
+                Post post = await _dbPost.GetAsync(p => p.Id == id);
+                if (post == null)
+                {
+                    return NotFound();
+                }
+                IEnumerable<Like> likes = await _dbLike.GetAllAsync(l => l.fk_messaggio == id && l.TipoDestinazione == "messaggio");
+                List<string> Usernames = new List<string>();
+                foreach (Like lik in likes)
+                {
+                    ApplicationUser user = await _dbUser.GetAsync(u => u.Id == lik.fk_user);
+                    if (user != null)
+                    {
+                        Usernames.Add(user.UserName);
+                    }
+                }
+                _response.Result = (Usernames);
+                _response.StatusCode = HttpStatusCode.OK;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages
+                     = new List<string>() { ex.ToString() };
+            }
+            return _response;
+        }
+
         [HttpGet("GetLikeCommenti")]
         [ResponseCache(CacheProfileName = "Default30")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -160,6 +200,11 @@ namespace SocialAPI.Controllers.v1
                 if (idStoria == null)
                 {
                     return BadRequest();
+                }
+                Storia storia = await _dbStoria.GetAsync(m => m.Id == idStoria);
+                if (storia == null)
+                {
+                    return NotFound();
                 }
                 var claimsIdentity = User.Identity as ClaimsIdentity;
                 if (claimsIdentity != null)
@@ -213,6 +258,11 @@ namespace SocialAPI.Controllers.v1
                 {
                     return BadRequest();
                 }
+                Post post = await _dbPost.GetAsync(m => m.Id == idPost);
+                if (post == null)
+                {
+                    return NotFound();
+                }
                 var claimsIdentity = User.Identity as ClaimsIdentity;
                 if (claimsIdentity != null)
                 {
@@ -252,6 +302,66 @@ namespace SocialAPI.Controllers.v1
             }
             return _response;
         }
+
+        [Authorize]
+        [HttpPost("LikeMessaggio")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<APIResponse>> LikeMessaggio(int idMessaggio)
+        {
+            try
+            {
+                if (idMessaggio == null)
+                {
+                    return BadRequest();
+                }
+                Messaggio msg = await _dbMessaggio.GetAsync(m=>m.Id == idMessaggio);
+                if (msg == null)
+                {
+                    return NotFound();
+                }
+                var claimsIdentity = User.Identity as ClaimsIdentity;
+                if (claimsIdentity != null)
+                {
+                    var NamesIdentifier = claimsIdentity.FindFirst(ClaimTypes.Name);
+                    if (NamesIdentifier != null)
+                    {
+                        string Username = NamesIdentifier.Value;
+                        if (Username != null)
+                        {
+                            ApplicationUser user = await _dbUser.GetAsync(u => u.UserName == Username);
+                            if (user == null)
+                            {
+                                return BadRequest();
+                            }
+                            Like likes = await _dbLike.GetAsync(p => p.fk_messaggio == idMessaggio && p.TipoDestinazione == "messaggio" && p.fk_user == user.Id);
+                            if (likes != null)
+                            {
+                                return Ok();
+                            }
+                            Like like = new Like() { fk_messaggio = idMessaggio, TipoDestinazione = "messaggio", fk_user = user.Id };
+                            await _dbLike.CreateAsync(like);
+                            _response.Result = new LikeDTO() { Id = like.Id, Username = user.UserName, TipoDestinazione = "messaggio", IdFk = idMessaggio };
+                            _response.StatusCode = HttpStatusCode.Created;
+                            return Ok(_response);
+
+
+                        }
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages
+                     = new List<string>() { ex.ToString() };
+            }
+            return _response;
+        }
+
+
         [Authorize]
         [HttpPost("LikeCommento")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -264,6 +374,11 @@ namespace SocialAPI.Controllers.v1
                 if (idCommento == null)
                 {
                     return BadRequest();
+                }
+                Commento commento = await _dbCommento.GetAsync(m => m.Id == idCommento);
+                if (commento == null)
+                {
+                    return NotFound();
                 }
                 var claimsIdentity = User.Identity as ClaimsIdentity;
                 if (claimsIdentity != null)
@@ -355,6 +470,59 @@ namespace SocialAPI.Controllers.v1
             }
             return _response;
         }
+
+
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpDelete("DeleteLikeMessaggio")]
+        public async Task<ActionResult<APIResponse>> DeleteLikeMessaggio(int idMessaggio)
+        {
+            try
+            {
+                if (idMessaggio == null)
+                {
+                    return BadRequest();
+                }
+                var claimsIdentity = User.Identity as ClaimsIdentity;
+                if (claimsIdentity != null)
+                {
+                    var NamesIdentifier = claimsIdentity.FindFirst(ClaimTypes.Name);
+                    if (NamesIdentifier != null)
+                    {
+                        string Username = NamesIdentifier.Value;
+                        if (Username != null)
+                        {
+                            ApplicationUser user = await _dbUser.GetAsync(u => u.UserName == Username);
+                            if (user == null)
+                            {
+                                return BadRequest();
+                            }
+                            Like likes = await _dbLike.GetAsync(p => p.fk_messaggio == idMessaggio && p.TipoDestinazione == "messaggio" && p.fk_user == user.Id);
+                            if (likes == null)
+                            {
+                                return NotFound();
+                            }
+                            await _dbLike.RemoveAsync(likes);
+                            _response.StatusCode = HttpStatusCode.NoContent;
+                            _response.IsSuccess = true;
+                            return Ok(_response);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages
+                     = new List<string>() { ex.ToString() };
+            }
+            return _response;
+        }
+
 
         [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
