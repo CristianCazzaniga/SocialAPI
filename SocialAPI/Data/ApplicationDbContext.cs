@@ -15,6 +15,7 @@ namespace SocialAPI.Data
 
         public DbSet<LocalUser> LocalUsers { get; set; }
         public DbSet<Post> Posts { get; set; }
+        public DbSet<Annuncio> Annunci { get; set; }
         public DbSet<Commento> Commenti { get; set; }
         public DbSet<Messaggio> Messaggi { get; set; }
         public DbSet<Storia> Storie { get; set; }
