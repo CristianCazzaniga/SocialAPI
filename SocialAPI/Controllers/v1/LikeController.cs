@@ -48,6 +48,11 @@ namespace SocialAPI.Controllers.v1
         {
             try
             {
+                Storia storia = await _dbStoria.GetAsync(p => p.Id == id);
+                if (storia == null)
+                {
+                    return NotFound();
+                }
                 IEnumerable<Like> likes = await _dbLike.GetAllAsync(l => l.fk_storia == id && l.TipoDestinazione=="storia");
                 List<string> Usernames = new List<string>();
                 foreach (Like lik in likes)
@@ -79,6 +84,11 @@ namespace SocialAPI.Controllers.v1
         {
             try
             {
+                Post post = await _dbPost.GetAsync(p=>p.Id==id);
+                if (post==null)
+                {
+                    return NotFound();
+                }
                 IEnumerable<Like> likes = await _dbLike.GetAllAsync(l => l.fk_post == id && l.TipoDestinazione == "post");
                 List<string> Usernames = new List<string>();
                 foreach (Like lik in likes)
@@ -110,7 +120,12 @@ namespace SocialAPI.Controllers.v1
         {
             try
             {
-                IEnumerable<Like> likes = await _dbLike.GetAllAsync(l => l.fk_commento == id && l.TipoDestinazione == "commento");
+                Commento commento = await _dbCommento.GetAsync(p => p.Id == id);
+                if (commento == null)
+                {
+                    return NotFound();
+                }
+                IEnumerable<Like> likes = await _dbLike.GetAllAsync(l => l.fk_commento == id && l.TipoDestinazione == "commento");  
                 List<string> Usernames = new List<string>();
                 foreach (Like lik in likes)
                 {

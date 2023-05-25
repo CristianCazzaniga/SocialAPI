@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SocialAPI.Models
+namespace SocialAPI.Models.Dto
 {
     public class CreateCommentoDTO
     {

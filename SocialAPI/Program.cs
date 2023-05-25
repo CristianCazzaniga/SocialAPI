@@ -25,6 +25,8 @@ builder.Services.AddResponseCaching();
 builder.Services.AddScoped<IPostRepostitory, PostRepository>();
 builder.Services.AddScoped<ICommentoRepostitory, CommentoRepository>();
 builder.Services.AddScoped<IStoriaRepostitory, StoriaRepository>();
+builder.Services.AddScoped<IMessaggioRepository, MessaggioRepository>();
+builder.Services.AddScoped<IChatRepository, ChatRepository>();
 builder.Services.AddScoped<ILikeRepostitory, LikeRepository>();
 builder.Services.AddScoped<ISeguiRepository, SeguiRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();

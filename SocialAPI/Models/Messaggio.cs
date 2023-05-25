@@ -12,6 +12,6 @@ namespace SocialAPI.Models
         public string fk_Mittente { get; set; } = null!;
         [ForeignKey(nameof(fk_Mittente))]
         public ApplicationUser Mittente { get; set; } = null!;
-        public virtual ICollection<LikeDTO> Likes { get; set; } = new List<LikeDTO>();
+        public virtual ICollection<Like> Likes { get; set; } = new List<Like>();
     }
 }

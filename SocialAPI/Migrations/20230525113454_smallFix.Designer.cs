@@ -12,8 +12,8 @@ using SocialAPI.Data;
 namespace SocialAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230524114925_fixLike")]
-    partial class fixLike
+    [Migration("20230525113454_smallFix")]
+    partial class smallFix
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -329,55 +329,6 @@ namespace SocialAPI.Migrations
                     b.ToTable("Likes");
                 });
 
-            modelBuilder.Entity("SocialAPI.Models.LikeDTO", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int?>("CommentoId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdFk")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("MessaggioId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("PostId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("StoriaId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TipoDestinazione")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId");
-
-                    b.HasIndex("CommentoId");
-
-                    b.HasIndex("MessaggioId");
-
-                    b.HasIndex("PostId");
-
-                    b.HasIndex("StoriaId");
-
-                    b.ToTable("LikeDTO");
-                });
-
             modelBuilder.Entity("SocialAPI.Models.LocalUser", b =>
                 {
                     b.Property<int>("Id")
@@ -640,23 +591,23 @@ namespace SocialAPI.Migrations
             modelBuilder.Entity("SocialAPI.Models.Like", b =>
                 {
                     b.HasOne("SocialAPI.Models.Commento", "Commento")
-                        .WithMany()
+                        .WithMany("Likes")
                         .HasForeignKey("fk_commento");
 
                     b.HasOne("SocialAPI.Models.Messaggio", "Messaggio")
-                        .WithMany()
+                        .WithMany("Likes")
                         .HasForeignKey("fk_messaggio");
 
                     b.HasOne("SocialAPI.Models.Post", "Post")
-                        .WithMany()
+                        .WithMany("Likes")
                         .HasForeignKey("fk_post");
 
                     b.HasOne("SocialAPI.Models.Storia", "Storia")
-                        .WithMany()
+                        .WithMany("Likes")
                         .HasForeignKey("fk_storia");
 
                     b.HasOne("SocialAPI.Models.ApplicationUser", "ApplicationUser")
-                        .WithMany()
+                        .WithMany("Likes")
                         .HasForeignKey("fk_user")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -670,29 +621,6 @@ namespace SocialAPI.Migrations
                     b.Navigation("Post");
 
                     b.Navigation("Storia");
-                });
-
-            modelBuilder.Entity("SocialAPI.Models.LikeDTO", b =>
-                {
-                    b.HasOne("SocialAPI.Models.ApplicationUser", null)
-                        .WithMany("Likes")
-                        .HasForeignKey("ApplicationUserId");
-
-                    b.HasOne("SocialAPI.Models.Commento", null)
-                        .WithMany("Likes")
-                        .HasForeignKey("CommentoId");
-
-                    b.HasOne("SocialAPI.Models.Messaggio", null)
-                        .WithMany("Likes")
-                        .HasForeignKey("MessaggioId");
-
-                    b.HasOne("SocialAPI.Models.Post", null)
-                        .WithMany("Likes")
-                        .HasForeignKey("PostId");
-
-                    b.HasOne("SocialAPI.Models.Storia", null)
-                        .WithMany("Likes")
-                        .HasForeignKey("StoriaId");
                 });
 
             modelBuilder.Entity("SocialAPI.Models.Messaggio", b =>

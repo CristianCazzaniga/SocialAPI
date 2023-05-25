@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SocialAPI.Models
+namespace SocialAPI.Models.Dto
 {
     public class LikeDTO
     {

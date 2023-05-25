@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SocialAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class addfoll : Migration
+    public partial class smallFix : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -49,18 +49,6 @@ namespace SocialAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Chat",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Chat", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -186,6 +174,32 @@ namespace SocialAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Chat",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UtenteA = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UtenteB = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Chat", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Chat_AspNetUsers_UtenteA",
+                        column: x => x.UtenteA,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
+                        name: "FK_Chat_AspNetUsers_UtenteB",
+                        column: x => x.UtenteB,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Posts",
                 columns: table => new
                 {
@@ -215,18 +229,24 @@ namespace SocialAPI.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Motivazione = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    fk_UtenteRichiedente = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    fk_UtenteRichiedente = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     fk_UtenteSegnalato = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Segnalazioni", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Segnalazioni_AspNetUsers_fk_UtenteRichiedente",
+                        column: x => x.fk_UtenteRichiedente,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
                         name: "FK_Segnalazioni_AspNetUsers_fk_UtenteSegnalato",
                         column: x => x.fk_UtenteSegnalato,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -277,30 +297,6 @@ namespace SocialAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ApplicationUserChat",
-                columns: table => new
-                {
-                    ChatsId = table.Column<int>(type: "int", nullable: false),
-                    UtentiId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ApplicationUserChat", x => new { x.ChatsId, x.UtentiId });
-                    table.ForeignKey(
-                        name: "FK_ApplicationUserChat_AspNetUsers_UtentiId",
-                        column: x => x.UtentiId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ApplicationUserChat_Chat_ChatsId",
-                        column: x => x.ChatsId,
-                        principalTable: "Chat",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Messaggi",
                 columns: table => new
                 {
@@ -335,6 +331,7 @@ namespace SocialAPI.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Contenuto = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DataPubblicazione = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DataModifica = table.Column<DateTime>(type: "datetime2", nullable: false),
                     fk_user = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     fk_post = table.Column<int>(type: "int", nullable: false)
                 },
@@ -399,11 +396,6 @@ namespace SocialAPI.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ApplicationUserChat_UtentiId",
-                table: "ApplicationUserChat",
-                column: "UtentiId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
                 column: "RoleId");
@@ -441,6 +433,16 @@ namespace SocialAPI.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Chat_UtenteA",
+                table: "Chat",
+                column: "UtenteA");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Chat_UtenteB",
+                table: "Chat",
+                column: "UtenteB");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Commenti_fk_post",
@@ -493,6 +495,11 @@ namespace SocialAPI.Migrations
                 column: "fk_user");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Segnalazioni_fk_UtenteRichiedente",
+                table: "Segnalazioni",
+                column: "fk_UtenteRichiedente");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Segnalazioni_fk_UtenteSegnalato",
                 table: "Segnalazioni",
                 column: "fk_UtenteSegnalato");
@@ -516,9 +523,6 @@ namespace SocialAPI.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "ApplicationUserChat");
-
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 

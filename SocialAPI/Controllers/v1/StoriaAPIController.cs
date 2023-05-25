@@ -162,7 +162,39 @@ namespace SocialAPI.Controllers.v1
             }
             return _response;
         }
-
+        [Authorize("admin")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpDelete("EliminaStoriaAdmin")]
+        public async Task<ActionResult<APIResponse>> DeleteStoriaAdmin(int id)
+        {
+            try
+            {
+                if (id == 0)
+                {
+                    return BadRequest();
+                }
+                var storia = await _dbStoria.GetAsync(u => u.Id == id);
+                if (storia == null)
+                {
+                    return NotFound();
+                }
+                await _dbStoria.RemoveAsync(storia);
+                _response.StatusCode = HttpStatusCode.NoContent;
+                _response.IsSuccess = true;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages
+                     = new List<string>() { ex.ToString() };
+            }
+            return _response;
+        }
 
 
 

@@ -83,13 +83,13 @@ namespace SocialAPI.Controllers.v1
                         if (Username != null)
                         {
                             ApplicationUser user = await _dbUser.GetAsync(u => u.UserName == Username);
-                            IEnumerable<Segui> seguiti = await _dbSegui.GetAllAsync(s=>s.Follower==user.Id);
+                            IEnumerable<Segui> seguiti = await _dbSegui.GetAllAsync(s => s.Follower == user.Id);
                             List<Post> posts = new List<Post>();
                             foreach (var item in seguiti)
                             {
-                                IEnumerable<Post> postUt = await _dbPost.GetAllAsync(s => s.fk_user ==item.Seguito);
+                                IEnumerable<Post> postUt = await _dbPost.GetAllAsync(s => s.fk_user == item.Seguito);
                                 posts.AddRange(postUt);
-                            }           
+                            }
                             _response.Result = _mapper.Map<IEnumerable<PostDTO>>(posts);
                             _response.StatusCode = HttpStatusCode.Created;
                             return Ok(_response);
@@ -207,13 +207,47 @@ namespace SocialAPI.Controllers.v1
             }
             return _response;
         }
+
+        [Authorize("admin")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpDelete("EliminaPostAdmin")]
+        public async Task<ActionResult<APIResponse>> DeletePostAdmin(int id)
+        {
+            try
+            {
+                if (id == 0)
+                {
+                    return BadRequest();
+                }
+                var post = await _dbPost.GetAsync(u => u.Id == id);
+                if (post == null)
+                {
+                    return NotFound();
+                }
+                await _dbPost.RemoveAsync(post);
+                _response.StatusCode = HttpStatusCode.NoContent;
+                _response.IsSuccess = true;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages
+                     = new List<string>() { ex.ToString() };
+            }
+            return _response;
+        }
+
         [Authorize]
         [HttpPut("AggiornaPost")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<APIResponse>> UpdatePost(int id, [FromBody] PostUpdateDTO updateDTO)
         {
-
             try
             {
                 var claimsIdentity = User.Identity as ClaimsIdentity;
@@ -227,7 +261,7 @@ namespace SocialAPI.Controllers.v1
                         {
                             ApplicationUser user = await _dbUser.GetAsync(u => u.UserName == Username);
                             Post post = await _dbPost.GetAsync(u => u.Id == id && u.fk_user == user.Id);
-                            if(post !=null)
+                            if (post != null)
                             {
                                 if (updateDTO == null)
                                 {
@@ -251,8 +285,6 @@ namespace SocialAPI.Controllers.v1
                 {
                     return NotFound();
                 }
-
-
             }
             catch (Exception ex)
             {
@@ -262,8 +294,5 @@ namespace SocialAPI.Controllers.v1
             }
             return _response;
         }
-
-      
-
     }
 }
