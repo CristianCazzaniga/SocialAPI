@@ -1,0 +1,19 @@
+{
+  "dependencies": {
+    "apis1": {
+      "ignored": "true",
+      "type": "apis.azure"
+    },
+    "identityapp1": {
+      "ignored": "true",
+      "type": "identityapp"
+    },
+    "mssql1": {
+      "secretStore": "AzureAppSettings",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/socialcc/databases/ccsocial",
+      "type": "mssql.azure",
+      "connectionId": "ConnectionStrings:DefaultSQLConnection",
+      "dynamicId": null
+    }
+  }
+}

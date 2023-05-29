@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\v2\**" />
+    <Content Remove="Controllers\v2\**" />
+    <EmbeddedResource Remove="Controllers\v2\**" />
+    <None Remove="Controllers\v2\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="11.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.7" />
@@ -27,10 +34,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SocialAPI_utility\SocialAPI_utility.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\v2\" />
   </ItemGroup>
 
 </Project>
