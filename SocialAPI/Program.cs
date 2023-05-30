@@ -46,7 +46,7 @@ builder.Services.AddVersionedApiExplorer(options =>
 });
 builder.Services.AddCors(p => p.AddPolicy("corspolicy", build =>
 {
-    build.WithOrigins("https://localhost:7104", "http://127.0.0.1:5215").AllowAnyMethod().AllowAnyHeader();
+    build.WithOrigins("https://localhost:5173", "http://localhost:5173", "http://127.0.0.1:5173").AllowAnyMethod().AllowAnyHeader();
 }));
 
 var key = builder.Configuration.GetValue<string>("ApiSettings:Secret");

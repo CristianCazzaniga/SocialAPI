@@ -23,10 +23,12 @@ namespace SocialAPI.Controllers.v1
         protected APIResponse _response;
         private readonly IStoriaRepostitory _dbStoria;
         private readonly IUserRepository _dbUser;
+        private readonly ISeguiRepository _dbSegui;
         private readonly IMapper _mapper;
-        public StoriaApiController(IStoriaRepostitory dbStoria, IUserRepository dbuser, IMapper mapper)
+        public StoriaApiController(IStoriaRepostitory dbStoria, ISeguiRepository dbSegui, IUserRepository dbuser, IMapper mapper)
         {
             _dbStoria = dbStoria;
+            _dbSegui=dbSegui;
             _mapper = mapper;
             _dbUser = dbuser;
             _response = new();
@@ -63,6 +65,52 @@ namespace SocialAPI.Controllers.v1
 
         }
 
+
+        [HttpGet("GetStorieUtentiSeguiti")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<APIResponse>> GetStorieUtentiSeguiti()
+        {
+            try
+            {
+                var claimsIdentity = User.Identity as ClaimsIdentity;
+                if (claimsIdentity != null)
+                {
+                    var NamesIdentifier = claimsIdentity.FindFirst(ClaimTypes.Name);
+                    if (NamesIdentifier != null)
+                    {
+                        string Username = NamesIdentifier.Value;
+                        if (Username != null)
+                        {
+                            ApplicationUser user = await _dbUser.GetAsync(u => u.UserName == Username);
+                            IEnumerable<Segui> seguiti = await _dbSegui.GetAllAsync(s => s.Follower == user.Id);
+                            List<Storia> storie = new List<Storia>();
+                            foreach (var item in seguiti)
+                            {
+                                IEnumerable<Storia> storiaUt = await _dbStoria.GetAllAsync(s => s.fk_user == item.Seguito);
+                                storie.AddRange(storiaUt);
+                            }
+                            _response.Result = _mapper.Map<IEnumerable<StoriaDTO>>(storie);
+                            _response.StatusCode = HttpStatusCode.Created;
+                            return Ok(_response);
+
+                        }
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages
+                     = new List<string>() { ex.ToString() };
+            }
+            return _response;
+
+        }
 
         [Authorize]
         [HttpPost("CreaStoria")]
