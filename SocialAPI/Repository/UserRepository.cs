@@ -87,9 +87,11 @@ namespace SocialAPI.Repository
             ApplicationUser user = new()
             {
                 UserName = registerationRequestDTO.UserName,
-                Email=registerationRequestDTO.Email,
-                NormalizedEmail=registerationRequestDTO.UserName.ToUpper(),
-                Name = registerationRequestDTO.Name
+                Email = registerationRequestDTO.Email,
+                NormalizedEmail = registerationRequestDTO.UserName.ToUpper(),
+                Name = registerationRequestDTO.Name,
+                dataDiNascita = registerationRequestDTO.DataDiNascita,
+                ImmagineProfilo = "https://i.ibb.co/K6Q5k9W/defaultimage.png"
             };
 
             try
