@@ -116,6 +116,35 @@ namespace SocialAPI.Controllers.v1
 
         }
 
+        [HttpGet("GetStoriaById")]
+        [ResponseCache(CacheProfileName = "Default30")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<APIResponse>> GetStoriaById(int Id)
+        {
+            try
+            {
+                Storia storia = await _dbStoria.GetAsync(s => s.Id == Id);
+                if (storia==null)
+                {
+                    return NotFound();
+                }
+                _response.Result = _mapper.Map<StoriaDTO>(storia);
+                _response.StatusCode = HttpStatusCode.OK;
+                return Ok(_response);
+
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages
+                     = new List<string>() { ex.ToString() };
+            }
+            return _response;
+
+        }
+
         [HttpGet("GetStorieUtentiSeguiti")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -140,10 +169,15 @@ namespace SocialAPI.Controllers.v1
                             foreach (var item in seguiti)
                             {
                                 IEnumerable<Storia> storiaUt = await _dbStoria.GetAllAsync(s => s.fk_user == item.Seguito && s.DataPubblicazione>DateTime.Now.AddHours(-24));
-                                if (storiaUt !=null)
+                               
+                                if (storiaUt != null)
                                 {
-                                    ApplicationUser utente = await _dbUser.GetAsync(us => us.Id == item.Seguito);
-                                    storie.Add(new StoriaDTORest() { User = new UsernameAndImageDTO() { UsernamePubblicante = utente.UserName, ImmagineDiProfiloUser = utente.ImmagineProfilo }, listaStorie = _mapper.Map<IEnumerable<StoriaDTO>>(storiaUt) });
+                                    if (storiaUt.Count()!=0)
+                                    {
+                                        ApplicationUser utente = await _dbUser.GetAsync(us => us.Id == item.Seguito);
+                                        storie.Add(new StoriaDTORest() { User = new UsernameAndImageDTO() { UsernamePubblicante = utente.UserName, ImmagineDiProfiloUser = utente.ImmagineProfilo }, listaStorie = _mapper.Map<IEnumerable<StoriaDTO>>(storiaUt) });
+                                    }
+                                   
                                 }
                             }
                             _response.Result = storie.AsEnumerable();

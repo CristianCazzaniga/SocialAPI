@@ -39,6 +39,36 @@ namespace SocialAPI.Controllers.v1
             _response = new();
         }
 
+        [HttpGet("GetPostByID")]
+        [ResponseCache(CacheProfileName = "Default30")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<APIResponse>> GetPostByID(int id)
+        {
+            try
+            {
+                Post post = await _dbPost.GetAsync(p=>p.Id==id);
+                if (post == null)
+                {
+                    return NotFound();
+                }             
+                _response.Result = _mapper.Map<PostDTO>(post);
+                _response.StatusCode = HttpStatusCode.OK;
+                return Ok(_response);
+
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages
+                     = new List<string>() { ex.ToString() };
+            }
+            return _response;
+
+        }
+
+
         [HttpGet("GetPostUtente")]
         [ResponseCache(CacheProfileName = "Default30")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -147,13 +177,13 @@ namespace SocialAPI.Controllers.v1
                             foreach (var post in posts)
                             {
                                 IEnumerable<Like> likes = await _dblike.GetAllAsync(l => l.fk_post == post.Id && l.TipoDestinazione == "post");
-                                List<string> Likes = new List<string>();
+                                List<UsernameAndImageDTO> Likes = new List<UsernameAndImageDTO>();
                                 foreach (Like lik in likes)
                                 {
                                     ApplicationUser us = await _dbUser.GetAsync(u => u.Id == lik.fk_user);
                                     if (us != null)
                                     {
-                                        Likes.Add(us.UserName);
+                                        Likes.Add(new UsernameAndImageDTO() { UsernamePubblicante = us.UserName, ImmagineDiProfiloUser = user.ImmagineProfilo });
                                     }
                                 }
                                 IEnumerable<Commento> commentiList;

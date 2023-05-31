@@ -11,7 +11,7 @@ namespace SocialAPI.Models.Dto
         public string Contenuto { get; set; } = null!;
         public DateTime DataPubblicazione { get; set; }
         public DateTime DataModifica { get; set; }
-        public List<string> likes { get; set; } = null!;
+        public List<UsernameAndImageDTO> likes { get; set; } = null!;
         public List<CommentoDTO> commenti { get; set; } = null!;
     }
 }

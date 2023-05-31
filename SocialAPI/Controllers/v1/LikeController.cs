@@ -56,13 +56,13 @@ namespace SocialAPI.Controllers.v1
                     return NotFound();
                 }
                 IEnumerable<Like> likes = await _dbLike.GetAllAsync(l => l.fk_storia == id && l.TipoDestinazione=="storia");
-                List<string> Usernames = new List<string>();
+                List<UsernameAndImageDTO> Usernames = new List<UsernameAndImageDTO>();
                 foreach (Like lik in likes)
                 {
                     ApplicationUser user = await _dbUser.GetAsync(u => u.Id == lik.fk_user);
-                    if (user !=null)
+                    if (user != null)
                     {
-                        Usernames.Add(user.UserName);
+                        Usernames.Add(new UsernameAndImageDTO() { UsernamePubblicante = user.UserName, ImmagineDiProfiloUser = user.ImmagineProfilo });
                     }
                 }
                 _response.Result = (Usernames);
@@ -92,13 +92,13 @@ namespace SocialAPI.Controllers.v1
                     return NotFound();
                 }
                 IEnumerable<Like> likes = await _dbLike.GetAllAsync(l => l.fk_post == id && l.TipoDestinazione == "post");
-                List<string> Usernames = new List<string>();
+                List<UsernameAndImageDTO> Usernames = new List<UsernameAndImageDTO>();
                 foreach (Like lik in likes)
                 {
                     ApplicationUser user = await _dbUser.GetAsync(u => u.Id == lik.fk_user);
                     if (user != null)
                     {
-                        Usernames.Add(user.UserName);
+                        Usernames.Add(new UsernameAndImageDTO() { UsernamePubblicante = user.UserName, ImmagineDiProfiloUser = user.ImmagineProfilo });
                     }
                 }
                 _response.Result = (Usernames);
@@ -129,13 +129,13 @@ namespace SocialAPI.Controllers.v1
                     return NotFound();
                 }
                 IEnumerable<Like> likes = await _dbLike.GetAllAsync(l => l.fk_messaggio == id && l.TipoDestinazione == "messaggio");
-                List<string> Usernames = new List<string>();
+                List<UsernameAndImageDTO> Usernames = new List<UsernameAndImageDTO>();
                 foreach (Like lik in likes)
                 {
                     ApplicationUser user = await _dbUser.GetAsync(u => u.Id == lik.fk_user);
                     if (user != null)
                     {
-                        Usernames.Add(user.UserName);
+                        Usernames.Add(new UsernameAndImageDTO() { UsernamePubblicante = user.UserName, ImmagineDiProfiloUser = user.ImmagineProfilo });
                     }
                 }
                 _response.Result = (Usernames);
@@ -165,14 +165,14 @@ namespace SocialAPI.Controllers.v1
                 {
                     return NotFound();
                 }
-                IEnumerable<Like> likes = await _dbLike.GetAllAsync(l => l.fk_commento == id && l.TipoDestinazione == "commento");  
-                List<string> Usernames = new List<string>();
+                IEnumerable<Like> likes = await _dbLike.GetAllAsync(l => l.fk_commento == id && l.TipoDestinazione == "commento");
+                List<UsernameAndImageDTO> Usernames = new List<UsernameAndImageDTO>();
                 foreach (Like lik in likes)
                 {
                     ApplicationUser user = await _dbUser.GetAsync(u => u.Id == lik.fk_user);
                     if (user != null)
                     {
-                        Usernames.Add(user.UserName);
+                        Usernames.Add(new UsernameAndImageDTO() { UsernamePubblicante = user.UserName, ImmagineDiProfiloUser = user.ImmagineProfilo });
                     }
                 }
                 _response.Result = (Usernames);
