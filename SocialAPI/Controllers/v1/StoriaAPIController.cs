@@ -34,6 +34,57 @@ namespace SocialAPI.Controllers.v1
             _response = new();
         }
 
+        [HttpGet("GetStoricoStorie")]
+        [Authorize]
+        [ResponseCache(CacheProfileName = "Default30")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<APIResponse>> GetStoricoStorie()
+        {
+            try
+            {
+                var claimsIdentity = User.Identity as ClaimsIdentity;
+                if (claimsIdentity != null)
+                {
+                    var NamesIdentifier = claimsIdentity.FindFirst(ClaimTypes.Name);
+                    if (NamesIdentifier != null)
+                    {
+                        string Username = NamesIdentifier.Value;
+                        if (Username != null)
+                        {
+                            ApplicationUser user = await _dbUser.GetAsync(u => u.UserName == Username);
+                            if (user == null)
+                            {
+                                return NotFound();
+                            }
+                            IEnumerable<Storia> storiaList;
+                            storiaList = await _dbStoria.GetAllAsync(u => u.fk_user == user.Id);
+                            _response.Result = _mapper.Map<List<StoriaDTO>>(storiaList);
+                            _response.StatusCode = HttpStatusCode.OK;
+                            return Ok(_response);
+                        }
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages
+                     = new List<string>() { ex.ToString() };
+            }
+            return _response;
+
+        }
+
         [HttpGet("GetStorieUtente")]
         [ResponseCache(CacheProfileName = "Default30")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -49,8 +100,8 @@ namespace SocialAPI.Controllers.v1
                     return NotFound();
                 }
                 IEnumerable<Storia> storiaList;
-                storiaList = await _dbStoria.GetAllAsync(u => u.fk_user == user.Id);
-                _response.Result = _mapper.Map<List<StoriaDTO>>(storiaList);
+                storiaList = await _dbStoria.GetAllAsync(u => u.fk_user == user.Id && u.DataPubblicazione > DateTime.Now.AddHours(-24));
+                _response.Result = new StoriaDTORest() { User = new UsernameAndImageDTO() { UsernamePubblicante = user.UserName, ImmagineDiProfiloUser = user.ImmagineProfilo }, listaStorie = _mapper.Map<List<StoriaDTO>>(storiaList) };
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
 
@@ -64,7 +115,6 @@ namespace SocialAPI.Controllers.v1
             return _response;
 
         }
-
 
         [HttpGet("GetStorieUtentiSeguiti")]
         [Authorize]
@@ -86,13 +136,17 @@ namespace SocialAPI.Controllers.v1
                         {
                             ApplicationUser user = await _dbUser.GetAsync(u => u.UserName == Username);
                             IEnumerable<Segui> seguiti = await _dbSegui.GetAllAsync(s => s.Follower == user.Id);
-                            List<Storia> storie = new List<Storia>();
+                            List<StoriaDTORest> storie = new List<StoriaDTORest>();
                             foreach (var item in seguiti)
                             {
-                                IEnumerable<Storia> storiaUt = await _dbStoria.GetAllAsync(s => s.fk_user == item.Seguito);
-                                storie.AddRange(storiaUt);
+                                IEnumerable<Storia> storiaUt = await _dbStoria.GetAllAsync(s => s.fk_user == item.Seguito && s.DataPubblicazione>DateTime.Now.AddHours(-24));
+                                if (storiaUt !=null)
+                                {
+                                    ApplicationUser utente = await _dbUser.GetAsync(us => us.Id == item.Seguito);
+                                    storie.Add(new StoriaDTORest() { User = new UsernameAndImageDTO() { UsernamePubblicante = utente.UserName, ImmagineDiProfiloUser = utente.ImmagineProfilo }, listaStorie = _mapper.Map<IEnumerable<StoriaDTO>>(storiaUt) });
+                                }
                             }
-                            _response.Result = _mapper.Map<IEnumerable<StoriaDTO>>(storie);
+                            _response.Result = storie.AsEnumerable();
                             _response.StatusCode = HttpStatusCode.Created;
                             return Ok(_response);
 
