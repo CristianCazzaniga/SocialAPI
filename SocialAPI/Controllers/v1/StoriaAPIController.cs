@@ -164,8 +164,18 @@ namespace SocialAPI.Controllers.v1
                         if (Username != null)
                         {
                             ApplicationUser user = await _dbUser.GetAsync(u => u.UserName == Username);
-                            IEnumerable<Segui> seguiti = await _dbSegui.GetAllAsync(s => s.Follower == user.Id);
+                            IEnumerable<Storia> storiaUs = await _dbStoria.GetAllAsync(s => s.fk_user == user.Id && s.DataPubblicazione > DateTime.Now.AddHours(-24));
                             List<StoriaDTORest> storie = new List<StoriaDTORest>();
+                            if (storiaUs != null)
+                            {
+                                if (storiaUs.Count() != 0)
+                                {
+                                    storie.Add(new StoriaDTORest() { User = new UsernameAndImageDTO() { UsernamePubblicante = "la tua storia", ImmagineDiProfiloUser = user.ImmagineProfilo }, listaStorie = _mapper.Map<IEnumerable<StoriaDTO>>(storiaUs) });
+                                }
+
+                            }
+                            IEnumerable<Segui> seguiti = await _dbSegui.GetAllAsync(s => s.Follower == user.Id);
+                           
                             foreach (var item in seguiti)
                             {
                                 IEnumerable<Storia> storiaUt = await _dbStoria.GetAllAsync(s => s.fk_user == item.Seguito && s.DataPubblicazione>DateTime.Now.AddHours(-24));
