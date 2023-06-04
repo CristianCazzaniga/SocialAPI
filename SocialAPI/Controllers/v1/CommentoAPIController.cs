@@ -15,7 +15,7 @@ using System.Security.Claims;
 namespace SocialAPI.Controllers.v1
 {
     //[Route("api/[controller]")]
-    [Route("api/v{version:apiVersion}/StoriaAPI")]
+    [Route("api/v{version:apiVersion}/CommentoApi")]
     [ApiController]
     [ApiVersion("1.0")]
     public class CommentoApiController : ControllerBase
@@ -58,7 +58,7 @@ namespace SocialAPI.Controllers.v1
                         ApplicationUser Utente = await _dbUser.GetAsync(u => u.Id == item.fk_user);
                         if (Utente != null)
                         {
-                            listaCommOut.Add(new CommentoDTO() {Id=item.Id, Contenuto = item.Contenuto, Username = Utente.UserName, DataPubblicazione = item.DataPubblicazione, DataModifica = item.DataModifica });
+                            listaCommOut.Add(new CommentoDTO() {Id=item.Id, Contenuto = item.Contenuto, User = new UsernameAndImageDTO() { UsernamePubblicante = Utente.UserName, ImmagineDiProfiloUser = Utente.ImmagineProfilo }, DataPubblicazione = item.DataPubblicazione, DataModifica = item.DataModifica });
                         }
                     }
                     catch (Exception)
@@ -116,7 +116,7 @@ namespace SocialAPI.Controllers.v1
                             }
                             Commento commento = new Commento() { Contenuto = createDTO.Contenuto, fk_post = idPost, fk_user = user.Id, DataPubblicazione = DateTime.Now};
                             await _dbCommento.CreateAsync(commento);
-                            _response.Result = new CommentoDTO() { Username = user.UserName, Contenuto = commento.Contenuto, DataPubblicazione = commento.DataPubblicazione, DataModifica = commento.DataModifica };
+                            _response.Result = new CommentoDTO() { User = new UsernameAndImageDTO() { UsernamePubblicante = user.UserName, ImmagineDiProfiloUser = user.ImmagineProfilo }, Contenuto = commento.Contenuto, DataPubblicazione = commento.DataPubblicazione, DataModifica = commento.DataModifica };
                             _response.StatusCode = HttpStatusCode.Created;
                             return Ok(_response);
 
