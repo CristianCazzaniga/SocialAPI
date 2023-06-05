@@ -196,7 +196,7 @@ namespace SocialAPI.Controllers.v1
                                         ApplicationUser Utente = await _dbUser.GetAsync(u => u.Id == item.fk_user);
                                         if (Utente != null)
                                         {
-                                            listaCommOut.Add(new CommentoDTO() { Id = item.Id, Contenuto = item.Contenuto, Username = Utente.UserName, DataPubblicazione = item.DataPubblicazione, DataModifica = item.DataModifica });
+                                            listaCommOut.Add(new CommentoDTO() { Id = item.Id, Contenuto = item.Contenuto, User = new UsernameAndImageDTO() { UsernamePubblicante=Utente.UserName, ImmagineDiProfiloUser=user.ImmagineProfilo }, DataPubblicazione = item.DataPubblicazione, DataModifica = item.DataModifica });
                                         }
                                     }
                                     catch (Exception)
