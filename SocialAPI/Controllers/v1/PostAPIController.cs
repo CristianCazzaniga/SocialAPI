@@ -211,7 +211,7 @@ namespace SocialAPI.Controllers.v1
                                 ApplicationUser utentePubb = await _dbUser.GetAsync(u => u.Id == post.fk_user);
                                 listaPostiInfo.Add(new PostInfoDTO() { Id = post.Id, commenti = listaCommOut, Like=lk, Contenuto = post.Contenuto, DataPubblicazione = post.DataPubblicazione, likes = Likes, Media = post.Media, User = new UsernameAndImageDTO() { UsernamePubblicante= utentePubb.UserName, ImmagineDiProfiloUser = utentePubb.ImmagineProfilo}, DataModifica = post.UpdatedDate });
                             }
-                            _response.Result = listaPostiInfo;
+                            _response.Result = listaPostiInfo.OrderByDescending(ls=>ls.DataPubblicazione);
                             _response.StatusCode = HttpStatusCode.Created;
                             return Ok(_response);
 
