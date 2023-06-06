@@ -10,7 +10,7 @@ namespace SocialAPI.Models.Dto
         public string Media { get; set; } = null!;
      
         public string Contenuto { get; set; } = null!;
-        public bool Like { get; set; };
+        public bool Like { get; set; }
         public DateTime DataPubblicazione { get; set; }
         public DateTime DataModifica { get; set; }
         public List<UsernameAndImageDTO> likes { get; set; } = null!;
