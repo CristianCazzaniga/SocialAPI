@@ -36,7 +36,6 @@ namespace SocialAPI.Controllers.v1
         }
         [Authorize]
         [HttpGet("GetMessaggiChat")]
-        [ResponseCache(CacheProfileName = "Default30")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -109,7 +108,6 @@ namespace SocialAPI.Controllers.v1
 
         [Authorize]
         [HttpGet("GetChat")]
-        [ResponseCache(CacheProfileName = "Default30")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]

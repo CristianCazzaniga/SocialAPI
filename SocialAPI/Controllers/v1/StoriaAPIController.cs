@@ -36,7 +36,6 @@ namespace SocialAPI.Controllers.v1
 
         [HttpGet("GetStoricoStorie")]
         [Authorize]
-        [ResponseCache(CacheProfileName = "Default30")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -86,7 +85,6 @@ namespace SocialAPI.Controllers.v1
         }
 
         [HttpGet("GetStorieUtente")]
-        [ResponseCache(CacheProfileName = "Default30")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -117,7 +115,6 @@ namespace SocialAPI.Controllers.v1
         }
 
         [HttpGet("GetStoriaById")]
-        [ResponseCache(CacheProfileName = "Default30")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]

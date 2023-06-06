@@ -42,7 +42,6 @@ namespace SocialAPI.Controllers.v1
             _response = new();
         }
         [HttpGet("GetLikeStoria")]
-        [ResponseCache(CacheProfileName = "Default30")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -78,7 +77,6 @@ namespace SocialAPI.Controllers.v1
             return _response;
         }
         [HttpGet("GetLikePost")]
-        [ResponseCache(CacheProfileName = "Default30")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -115,7 +113,6 @@ namespace SocialAPI.Controllers.v1
         }
 
         [HttpGet("GetLikeMessaggio")]
-        [ResponseCache(CacheProfileName = "Default30")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -152,7 +149,6 @@ namespace SocialAPI.Controllers.v1
         }
 
         [HttpGet("GetLikeCommenti")]
-        [ResponseCache(CacheProfileName = "Default30")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]

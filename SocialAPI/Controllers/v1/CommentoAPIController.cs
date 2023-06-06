@@ -35,7 +35,6 @@ namespace SocialAPI.Controllers.v1
         }
 
         [HttpGet("GetCommentiPost")]
-        [ResponseCache(CacheProfileName = "Default30")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]

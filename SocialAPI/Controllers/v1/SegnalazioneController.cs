@@ -34,7 +34,6 @@ namespace SocialAPI.Controllers.v1
         }
         [Authorize(Roles = "admin")]
         [HttpGet("GetReportUtenteAdmin")]
-        [ResponseCache(CacheProfileName = "Default30")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
