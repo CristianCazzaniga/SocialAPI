@@ -7,6 +7,6 @@ namespace SocialAPI.Repository.IRepostiory
     {
 
         Task<Post> UpdateAsync(Post entity);
-
+        Task<List<Post>> GetExplorePost();
     }
 }

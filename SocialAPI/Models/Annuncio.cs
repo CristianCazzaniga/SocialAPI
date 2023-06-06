@@ -7,11 +7,8 @@ namespace SocialAPI.Models
         public int Id { get; set; }
         public string Titolo { get; set; } = null!;
         public string Descrizione { get; set; } = null!;
-        public string Url { get; set; } = null!;
-        public string Href { get; set; } = null!;
-        public double Prezzo { get; set; }
+        public string Media { get; set; } = null!;
         public DateTime DataPubblicazione { get; set; }
-        public DateTime UpdatedDate { get; set; }
 
     }
 }

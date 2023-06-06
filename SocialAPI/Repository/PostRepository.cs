@@ -22,5 +22,9 @@ namespace SocialAPI.Repository
             await _db.SaveChangesAsync();
             return entity;
         }
+        public async Task<List<Post>> GetExplorePost()
+        {
+            return _db.Posts.Take(40).ToList();
+        }
     }
 }
