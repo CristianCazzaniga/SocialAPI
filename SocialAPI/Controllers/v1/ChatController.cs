@@ -16,7 +16,7 @@ using System.Collections;
 namespace SocialAPI.Controllers.v1
 {
     //[Route("api/[controller]")]
-    [Route("api/v{version:apiVersion}/FollowAPI")]
+    [Route("api/v{version:apiVersion}/ChatApi")]
     [ApiController]
     [ApiVersion("1.0")]
     public class ChatController : ControllerBase
@@ -107,7 +107,80 @@ namespace SocialAPI.Controllers.v1
 
         }
 
+        [Authorize]
+        [HttpGet("GetChat")]
+        [ResponseCache(CacheProfileName = "Default30")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<APIResponse>> GetChat()
+        {
+            try
+            {
+                var claimsIdentity = User.Identity as ClaimsIdentity;
+                if (claimsIdentity != null)
+                {
+                    var NamesIdentifier = claimsIdentity.FindFirst(ClaimTypes.Name);
+                    if (NamesIdentifier != null)
+                    {
+                        string Username = NamesIdentifier.Value;
+                        if (Username != null)
+                        {
+                            ApplicationUser userAtt = await _dbUser.GetAsync(u => u.UserName == Username);
+                            if (userAtt == null)
+                            {
+                                return BadRequest();
+                            }
+                            List<Chat> chat = await _dbchat.GetAllAsync(c => (c.UtenteA == userAtt.Id) || (c.UtenteB == userAtt.Id));
+                            List<UsernameAndImageDTO> users = new List<UsernameAndImageDTO>();
+                            if (chat == null)
+                            {
+                                _response.Result = null;
+                            }
+                            else
+                            {
+                                foreach (var item in chat)
+                                {
+                                    bool mittente = false;
+                                    if (item.UtenteA != userAtt.Id)
+                                    {
+                                        ApplicationUser userDest = await _dbUser.GetAsync(u => u.Id == item.UtenteA);
+                                        users.Add(new UsernameAndImageDTO() { UsernamePubblicante = userDest.UserName, ImmagineDiProfiloUser = userDest.ImmagineProfilo });
+                                    }
+                                    else
+                                    {
+                                        ApplicationUser userDest = await _dbUser.GetAsync(u => u.Id == item.UtenteB);
+                                        users.Add(new UsernameAndImageDTO() { UsernamePubblicante = userDest.UserName, ImmagineDiProfiloUser = userDest.ImmagineProfilo });
+                                    }
+                                }
+                                _response.Result = new ChatViewDTO() { listaChat = users, MioUsername = userAtt.UserName };
+                            }
+                            _response.StatusCode = HttpStatusCode.NoContent;
+                            _response.IsSuccess = true;
+                            return Ok(_response);
 
+
+
+                        }
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                }
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages
+                     = new List<string>() { ex.ToString() };
+            }
+            return _response;
+        }
         [Authorize]
         [HttpPost("MandaMessaggio")]
         [ProducesResponseType(StatusCodes.Status201Created)]
