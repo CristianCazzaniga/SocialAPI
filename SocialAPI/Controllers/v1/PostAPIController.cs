@@ -173,6 +173,7 @@ namespace SocialAPI.Controllers.v1
                                 IEnumerable<Post> postUt = await _dbPost.GetAllAsync(s => s.fk_user == item.Seguito);
                                 posts.AddRange(postUt);
                             }
+                            bool lk = false;
                             List<PostInfoDTO> listaPostiInfo = new List<PostInfoDTO>();
                             foreach (var post in posts)
                             {
@@ -183,6 +184,10 @@ namespace SocialAPI.Controllers.v1
                                     ApplicationUser us = await _dbUser.GetAsync(u => u.Id == lik.fk_user);
                                     if (us != null)
                                     {
+                                        if (lik.fk_user==user.Id)
+                                        {
+                                            lk = true;
+                                        }
                                         Likes.Add(new UsernameAndImageDTO() { UsernamePubblicante = us.UserName, ImmagineDiProfiloUser = user.ImmagineProfilo });
                                     }
                                 }
@@ -204,7 +209,7 @@ namespace SocialAPI.Controllers.v1
                                     }
                                 }
                                 ApplicationUser utentePubb = await _dbUser.GetAsync(u => u.Id == post.fk_user);
-                                listaPostiInfo.Add(new PostInfoDTO() { Id = post.Id, commenti = listaCommOut, Contenuto = post.Contenuto, DataPubblicazione = post.DataPubblicazione, likes = Likes, Media = post.Media, User = new UsernameAndImageDTO() { UsernamePubblicante= utentePubb.UserName, ImmagineDiProfiloUser = utentePubb.ImmagineProfilo}, DataModifica = post.UpdatedDate });
+                                listaPostiInfo.Add(new PostInfoDTO() { Id = post.Id, commenti = listaCommOut, Like=lk, Contenuto = post.Contenuto, DataPubblicazione = post.DataPubblicazione, likes = Likes, Media = post.Media, User = new UsernameAndImageDTO() { UsernamePubblicante= utentePubb.UserName, ImmagineDiProfiloUser = utentePubb.ImmagineProfilo}, DataModifica = post.UpdatedDate });
                             }
                             _response.Result = listaPostiInfo;
                             _response.StatusCode = HttpStatusCode.Created;

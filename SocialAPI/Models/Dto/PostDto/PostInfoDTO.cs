@@ -8,7 +8,9 @@ namespace SocialAPI.Models.Dto
         public int Id { get; set; }
         public UsernameAndImageDTO User { get; set; } = null!;
         public string Media { get; set; } = null!;
+     
         public string Contenuto { get; set; } = null!;
+        public bool Like { get; set; };
         public DateTime DataPubblicazione { get; set; }
         public DateTime DataModifica { get; set; }
         public List<UsernameAndImageDTO> likes { get; set; } = null!;
