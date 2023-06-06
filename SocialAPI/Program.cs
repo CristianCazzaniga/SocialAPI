@@ -31,6 +31,7 @@ builder.Services.AddScoped<ISegnalazioneRepository, SegnalazioneRepository>();
 builder.Services.AddScoped<IChatRepository, ChatRepository>();
 builder.Services.AddScoped<ILikeRepostitory, LikeRepository>();
 builder.Services.AddScoped<ISeguiRepository, SeguiRepository>();
+builder.Services.AddScoped<IAnnuncioRepository, AnnuncioRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddApiVersioning(options =>
