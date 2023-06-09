@@ -157,7 +157,7 @@ namespace SocialAPI.Controllers
                 {
                     utentiNome.Add(item.UserName);
                 }
-                utentiNome = utentiNome.OrderBy(each => Compute(each, search)).Where(u=>u.ToLower().Contains(search.ToLower())).ToList();
+                utentiNome = utentiNome.OrderBy(each => Compute(each, search)).Where(u => u.ToLower().Contains(search.ToLower())).ToList();
                 List<UsernameAndImageDTO> usl = new List<UsernameAndImageDTO>();
                 foreach (var item in utentiNome)
                 {
@@ -303,18 +303,18 @@ namespace SocialAPI.Controllers
 
                             user.ImmagineProfilo = fotoProfilo;
 
-                                await _userRepo.UpdateAsync(user);
-                                _response.StatusCode = HttpStatusCode.NoContent;
-                                _response.IsSuccess = true;
-                                return Ok(_response);
-                            }
-                            else
-                            {
-                                return NotFound();
-                            }
+                            await _userRepo.UpdateAsync(user);
+                            _response.StatusCode = HttpStatusCode.NoContent;
+                            _response.IsSuccess = true;
+                            return Ok(_response);
+                        }
+                        else
+                        {
+                            return NotFound();
                         }
                     }
                 }
+
                 else
                 {
                     return NotFound();
@@ -327,9 +327,16 @@ namespace SocialAPI.Controllers
                 _response.IsSuccess = false;
                 _response.ErrorMessages
                      = new List<string>() { ex.ToString() };
-            }
+            };
+
+
             return _response;
         }
+
+
+
+
+
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDTO model)
