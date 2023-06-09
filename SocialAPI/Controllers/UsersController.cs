@@ -157,7 +157,7 @@ namespace SocialAPI.Controllers
                 {
                     utentiNome.Add(item.UserName);
                 }
-                utentiNome = utentiNome.OrderBy(each => Compute(each, search)).ToList();
+                utentiNome = utentiNome.OrderBy(each => Compute(each, search)).Where(u=>u.ToLower().Contains(search.ToLower())).ToList();
                 List<UsernameAndImageDTO> usl = new List<UsernameAndImageDTO>();
                 foreach (var item in utentiNome)
                 {

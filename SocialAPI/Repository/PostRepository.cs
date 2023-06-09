@@ -24,7 +24,7 @@ namespace SocialAPI.Repository
         }
         public async Task<List<Post>> GetExplorePost()
         {
-            return _db.Posts.Take(40).ToList();
+            return _db.Posts.OrderBy(r => Guid.NewGuid()).Take(40).ToList();
         }
     }
 }
