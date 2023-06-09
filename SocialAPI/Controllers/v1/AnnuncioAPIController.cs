@@ -37,7 +37,7 @@ namespace SocialAPI.Controllers.v1
         {
             try
             {
-                _response.Result = await _dbannuncio.GetAllAsync();
+                _response.Result = await _dbannuncio.GetAnnunciCasual();
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
 

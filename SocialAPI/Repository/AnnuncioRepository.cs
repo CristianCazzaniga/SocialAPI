@@ -21,5 +21,9 @@ namespace SocialAPI.Repository
             await _db.SaveChangesAsync();
             return entity;
         }
+        public async Task<List<Annuncio>> GetAnnunciCasual()
+        {
+            return _db.Annunci.OrderBy(r => Guid.NewGuid()).Take(4).ToList();
+        }
     }
 }

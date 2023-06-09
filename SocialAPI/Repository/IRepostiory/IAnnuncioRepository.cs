@@ -7,5 +7,6 @@ namespace SocialAPI.Repository.IRepostiory
     {
 
         Task<Annuncio> UpdateAsync(Annuncio entity);
+        Task<List<Annuncio>> GetAnnunciCasual();
     }
 }
