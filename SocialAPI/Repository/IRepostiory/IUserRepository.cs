@@ -8,5 +8,6 @@ namespace SocialAPI.Repository.IRepostiory
         bool IsUniqueUser(string username);
         Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO);
         Task<UserDTO> Register(RegisterationRequestDTO registerationRequestDTO);
+        Task<ApplicationUser> UpdateAsync(ApplicationUser entity);
     }
 }

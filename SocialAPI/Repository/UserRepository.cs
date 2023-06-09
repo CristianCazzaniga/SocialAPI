@@ -38,7 +38,6 @@ namespace SocialAPI.Repository
             }
             return false;
         }
-
         public async Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO)
         {
             var user = _db.ApplicationUsers
@@ -81,7 +80,12 @@ namespace SocialAPI.Repository
             };
             return loginResponseDTO;
         }
-
+        public async Task<ApplicationUser> UpdateAsync(ApplicationUser entity)
+        {
+            _db.Users.Update(entity);
+            await _db.SaveChangesAsync();
+            return entity;
+        }
         public async Task<UserDTO> Register(RegisterationRequestDTO registerationRequestDTO)
         {
             ApplicationUser user = new()

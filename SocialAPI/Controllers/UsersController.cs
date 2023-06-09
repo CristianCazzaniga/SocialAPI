@@ -279,6 +279,58 @@ namespace SocialAPI.Controllers
             }
             return _response;
         }
+
+        [Authorize]
+        [HttpPut("AggiornaFotoProfilo")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<APIResponse>> AggiornaFotoProfilo(string fotoProfilo)
+        {
+
+            try
+            {
+                var claimsIdentity = User.Identity as ClaimsIdentity;
+                if (claimsIdentity != null)
+                {
+                    var NamesIdentifier = claimsIdentity.FindFirst(ClaimTypes.Name);
+                    if (NamesIdentifier != null)
+                    {
+                        string Username = NamesIdentifier.Value;
+                        if (Username != null)
+                        {
+                            ApplicationUser user = await _userRepo.GetAsync(u => u.UserName == Username);
+
+
+                            user.ImmagineProfilo = fotoProfilo;
+
+                                await _userRepo.UpdateAsync(user);
+                                _response.StatusCode = HttpStatusCode.NoContent;
+                                _response.IsSuccess = true;
+                                return Ok(_response);
+                            }
+                            else
+                            {
+                                return NotFound();
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    return NotFound();
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages
+                     = new List<string>() { ex.ToString() };
+            }
+            return _response;
+        }
+
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDTO model)
         {
