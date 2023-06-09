@@ -52,7 +52,7 @@ namespace SocialAPI.Controllers.v1
 
         }
 
-
+  
 
 
         [HttpPost("CreaAnnuncio")]
@@ -72,6 +72,40 @@ namespace SocialAPI.Controllers.v1
 
 
 
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages
+                     = new List<string>() { ex.ToString() };
+            }
+            return _response;
+        }
+
+        [Authorize(Roles = "admin")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpDelete("EliminaAnnuncioAdmin")]
+        public async Task<ActionResult<APIResponse>> EliminaAnnuncioAdmin(int id)
+        {
+            try
+            {
+                if (id == 0)
+                {
+                    return BadRequest();
+                }
+                var annuncio = await _dbannuncio.GetAsync(u => u.Id == id);
+                if (annuncio == null)
+                {
+                    return NotFound();
+                }
+                await _dbannuncio.RemoveAsync(annuncio);
+                _response.StatusCode = HttpStatusCode.NoContent;
+                _response.IsSuccess = true;
+                return Ok(_response);
             }
             catch (Exception ex)
             {

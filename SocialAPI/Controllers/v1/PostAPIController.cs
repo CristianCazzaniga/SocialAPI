@@ -386,7 +386,7 @@ namespace SocialAPI.Controllers.v1
             return _response;
         }
 
-        [Authorize("admin")]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
