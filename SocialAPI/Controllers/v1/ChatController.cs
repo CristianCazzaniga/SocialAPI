@@ -4,6 +4,7 @@ using SocialAPI.Models;
 using SocialAPI.Models.Dto;
 using SocialAPI.Repository.IRepostiory;
 using Microsoft.AspNetCore.Authorization;
+using Swashbuckle.AspNetCore.Annotations;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -36,6 +37,7 @@ namespace SocialAPI.Controllers.v1
         }
         [Authorize]
         [HttpGet("GetMessaggiChat")]
+        [SwaggerOperation(Summary = "API that allows to get chat messages", Description = "API that allows you to receive all messages exchanged with a user.")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -108,6 +110,7 @@ namespace SocialAPI.Controllers.v1
 
         [Authorize]
         [HttpGet("GetChat")]
+        [SwaggerOperation(Summary = "API that allows to get chats", Description = "API that allows you to receive all the users you wrote with. ")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -180,6 +183,7 @@ namespace SocialAPI.Controllers.v1
             return _response;
         }
         [Authorize]
+        [SwaggerOperation(Summary = "API that allows to create new message", Description = "API that allows you to create a new message for a specific user. You need to insert the message in the body and pass the recipient's user in the url.")]
         [HttpPost("MandaMessaggio")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -236,6 +240,7 @@ namespace SocialAPI.Controllers.v1
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [SwaggerOperation(Summary = "API that allows to delete a message", Description = "API that allows you to delete a message by passing it the id. You must be the sender of the message.")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpDelete("EliminaMessaggio")]
         public async Task<ActionResult<APIResponse>> EliminaMessaggio(int id)

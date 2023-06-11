@@ -47,7 +47,7 @@ builder.Services.AddVersionedApiExplorer(options =>
 });
 builder.Services.AddCors(p => p.AddPolicy("corspolicy", build =>
 {
-    build.WithOrigins("https://localhost:5173", "http://localhost:5173", "http://127.0.0.1:5173", "http://127.0.0.1:5503", "https://localhost:5503", "http://localhost:5503").AllowAnyMethod().AllowAnyHeader();
+    build.WithOrigins("https://localhost:5173", "http://localhost:5173", "http://127.0.0.1:5173", "http://127.0.0.1:5503", "https://localhost:5503", "http://localhost:5503","https://gray-sea-0ae5fe703.3.azurestaticapps.net").AllowAnyMethod().AllowAnyHeader();
 }));
 
 var key = builder.Configuration.GetValue<string>("ApiSettings:Secret");
@@ -110,28 +110,12 @@ builder.Services.AddSwaggerGen(options =>
             new List<string>()
         }
     });
+    options.EnableAnnotations();
     options.SwaggerDoc("v1", new OpenApiInfo
     {
         Version = "v1.0",
         Title = "Social API V1",
-        Description = "API to manage SocialNetwork",
-        TermsOfService = new Uri("https://example.com/terms"),
-        Contact = new OpenApiContact
-        {
-            Name = "Dotnetmastery",
-            Url = new Uri("https://dotnetmastery.com")
-        },
-        License = new OpenApiLicense
-        {
-            Name = "Example License",
-            Url = new Uri("https://example.com/license")
-        }
-    });
-    options.SwaggerDoc("v2", new OpenApiInfo
-    {
-        Version = "v2.0",
-        Title = "Social API V2",
-        Description = "API to manage SocialNetwork",
+        Description = "API developed by Cristian Cazzaniga, student of the 5 IA of Villa Greppi, which allow to manage the front and social network part.",
         TermsOfService = new Uri("https://example.com/terms"),
         Contact = new OpenApiContact
         {

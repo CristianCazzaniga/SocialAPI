@@ -23,7 +23,7 @@ namespace SocialAPI.Repository
         }
         public async Task<List<Annuncio>> GetAnnunciCasual()
         {
-            return _db.Annunci.OrderBy(r => Guid.NewGuid()).Take(4).ToList();
+            return _db.Annunci.OrderBy(r => Guid.NewGuid()).Take(8).ToList();
         }
     }
 }

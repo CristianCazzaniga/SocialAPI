@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Text.Json;
 using System.Security.Claims;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SocialAPI.Controllers.v1
 {
@@ -35,6 +36,7 @@ namespace SocialAPI.Controllers.v1
         }
 
         [HttpGet("GetCommentiPost")]
+        [SwaggerOperation(Summary = "API that allows to get the comments of a post", Description = "API that allows you to receive all the comments of a post passing the post id")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -82,6 +84,7 @@ namespace SocialAPI.Controllers.v1
 
         [Authorize]
         [HttpPost("CreaCommento")]
+        [SwaggerOperation(Summary = "API that allows to create new comment for a post", Description = "API that allows to create new comment for a post passing the post id and in the body the object.")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -139,6 +142,7 @@ namespace SocialAPI.Controllers.v1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [SwaggerOperation(Summary = "API that allows to delete comment of a post", Description = "API that allows to delete comment of a post passing the comment id. the comment must be yours.")]
         [HttpDelete("EliminaCommento")]
         public async Task<ActionResult<APIResponse>> DeleteCommento(int id)
         {
@@ -191,6 +195,8 @@ namespace SocialAPI.Controllers.v1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [SwaggerOperation(Summary = "API that allows to delete comment of a post", Description = "API that allows to delete comment of a post passing the comment id. Only for admin")]
+
         [HttpDelete("EliminaCommentoAdmin")]
         public async Task<ActionResult<APIResponse>> DeleteCommentoAdmin(int id)
         {
@@ -221,6 +227,7 @@ namespace SocialAPI.Controllers.v1
 
         [Authorize]
         [HttpPut("AggiornaCommento")]
+        [SwaggerOperation(Summary = "API that allows to update comment of a post")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<APIResponse>> UpdatePost(int id, [FromBody] PostUpdateDTO updateDTO)

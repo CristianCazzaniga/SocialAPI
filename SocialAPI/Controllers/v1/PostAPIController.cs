@@ -12,6 +12,7 @@ using System.Net;
 using System.Text.Json;
 using System.Security.Claims;
 using System.ComponentModel;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SocialAPI.Controllers.v1
 {
@@ -28,11 +29,11 @@ namespace SocialAPI.Controllers.v1
         private readonly ILikeRepostitory _dblike;
         private readonly IUserRepository _dbUser;
         private readonly IMapper _mapper;
-        public PostAPIController(IPostRepostitory dbPost, ISeguiRepository dbSegui, IUserRepository dbuser,ILikeRepostitory dblike, ICommentoRepostitory dbcommenti, IMapper mapper)
+        public PostAPIController(IPostRepostitory dbPost, ISeguiRepository dbSegui, IUserRepository dbuser, ILikeRepostitory dblike, ICommentoRepostitory dbcommenti, IMapper mapper)
         {
             _dbPost = dbPost;
             _dbSegui = dbSegui;
-            _dbcommenti= dbcommenti;
+            _dbcommenti = dbcommenti;
             _dblike = dblike;
             _mapper = mapper;
             _dbUser = dbuser;
@@ -40,6 +41,7 @@ namespace SocialAPI.Controllers.v1
         }
 
         [HttpGet("GetPostByID")]
+        [SwaggerOperation(Summary = "API that allows to get a post from id")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -47,11 +49,11 @@ namespace SocialAPI.Controllers.v1
         {
             try
             {
-                Post post = await _dbPost.GetAsync(p=>p.Id==id);
+                Post post = await _dbPost.GetAsync(p => p.Id == id);
                 if (post == null)
                 {
                     return NotFound();
-                }             
+                }
                 _response.Result = _mapper.Map<PostDTO>(post);
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
@@ -69,6 +71,7 @@ namespace SocialAPI.Controllers.v1
 
 
         [HttpGet("GetPostUtente")]
+        [SwaggerOperation(Summary = "API that allows to get all posts by a user")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -101,6 +104,7 @@ namespace SocialAPI.Controllers.v1
 
         [HttpGet("GetPostUtentiSeguiti")]
         [Authorize]
+        [SwaggerOperation(Summary = "API that allows to get all posts from all followed users")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -145,6 +149,7 @@ namespace SocialAPI.Controllers.v1
 
         }
         [HttpGet("GetPostExplore")]
+        [SwaggerOperation(Summary = "API that allows to get casual posts", Description="Allows you to receive up to 40 random posts from those contained in the database")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -205,6 +210,7 @@ namespace SocialAPI.Controllers.v1
 
         }
         [HttpGet("GetPostUtentiSeguitiInfo")]
+        [SwaggerOperation(Summary = "API that allows to get all posts + info from all followed users", Description = "Returns more useful information to the frontand to view the home page more easily.")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -290,6 +296,7 @@ namespace SocialAPI.Controllers.v1
 
         [Authorize]
         [HttpPost("CreaPost")]
+        [SwaggerOperation(Summary = "API that allows to create new post")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -340,6 +347,7 @@ namespace SocialAPI.Controllers.v1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [SwaggerOperation(Summary = "API that allows to delete a post", Description = "must be your post")]
         [HttpDelete("EliminaPost")]
         public async Task<ActionResult<APIResponse>> DeletePost(int id)
         {
@@ -392,6 +400,7 @@ namespace SocialAPI.Controllers.v1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [SwaggerOperation(Summary = "API that allows to delete a post", Description="Only admin")]
         [HttpDelete("EliminaPostAdmin")]
         public async Task<ActionResult<APIResponse>> DeletePostAdmin(int id)
         {
@@ -422,6 +431,7 @@ namespace SocialAPI.Controllers.v1
 
         [Authorize]
         [HttpPut("AggiornaPost")]
+        [SwaggerOperation(Summary = "API that allows to update a post", Description = "must be your post")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<APIResponse>> UpdatePost(int id, [FromBody] PostUpdateDTO updateDTO)

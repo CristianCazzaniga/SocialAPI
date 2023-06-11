@@ -12,6 +12,7 @@ using System.Net;
 using System.Text.Json;
 using System.Security.Claims;
 using System.Collections;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SocialAPI.Controllers.v1
 {
@@ -33,6 +34,7 @@ namespace SocialAPI.Controllers.v1
             _response = new();
         }
         [HttpGet("GetFollower")]
+        [SwaggerOperation(Summary = "API that allows you to get your followers.")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -69,6 +71,7 @@ namespace SocialAPI.Controllers.v1
         }
 
         [HttpGet("GetSeguiti")]
+        [SwaggerOperation(Summary = "API that allows you to get everyone you follow.")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -107,6 +110,7 @@ namespace SocialAPI.Controllers.v1
         }
         [Authorize]
         [HttpPost("SeguiUtente")]
+        [SwaggerOperation(Summary = "API that allows you to follow a user.")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -160,6 +164,7 @@ namespace SocialAPI.Controllers.v1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [SwaggerOperation(Summary = "API that allows you to unfollow a user.")]
         [HttpDelete("UnfollowUtente")]
         public async Task<ActionResult<APIResponse>> DeleteSegui(string UtenteDaUnfolloware)
         {

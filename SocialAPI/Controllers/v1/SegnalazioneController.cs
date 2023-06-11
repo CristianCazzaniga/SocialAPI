@@ -12,6 +12,8 @@ using System.Net;
 using System.Text.Json;
 using System.Security.Claims;
 using System.Collections;
+using Swashbuckle.AspNetCore.Annotations;
+using System.ComponentModel;
 
 namespace SocialAPI.Controllers.v1
 {
@@ -34,6 +36,7 @@ namespace SocialAPI.Controllers.v1
         }
         [Authorize(Roles = "admin")]
         [HttpGet("GetReportUtenteAdmin")]
+        [SwaggerOperation(Summary = "API that allows you to get all the reports referring to a user.", Description="Only admin")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -71,6 +74,7 @@ namespace SocialAPI.Controllers.v1
 
         [Authorize]
         [HttpPost("SegnalaUtente")]
+        [SwaggerOperation(Summary = "API that allows you to report a user.")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -125,6 +129,7 @@ namespace SocialAPI.Controllers.v1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [SwaggerOperation(Summary = "API that allows you to delete a report reffering to a user.", Description ="Only admin")]
         [HttpDelete("ElimnaSegnalazioneAdmin")]
         public async Task<ActionResult<APIResponse>> ElimnaSegnalazioneAdmin(int id)
         {

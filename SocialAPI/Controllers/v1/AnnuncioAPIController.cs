@@ -4,6 +4,7 @@ using SocialAPI.Models;
 using SocialAPI.Models.Dto;
 using SocialAPI.Repository.IRepostiory;
 using Microsoft.AspNetCore.Authorization;
+using Swashbuckle.AspNetCore.Annotations;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -30,6 +31,7 @@ namespace SocialAPI.Controllers.v1
         }
 
         [HttpGet("GetAnnunci")]
+        [SwaggerOperation(Summary = "API that allows to get the ads", Description = "API that allows you to receive 8 random advertisements among all those present in the database.")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -56,6 +58,7 @@ namespace SocialAPI.Controllers.v1
 
 
         [HttpPost("CreaAnnuncio")]
+        [SwaggerOperation(Summary = "API that allows to create the ads", Description = "API that allows you to create an advertisements inserting an object of type ad in the body.")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -68,10 +71,6 @@ namespace SocialAPI.Controllers.v1
                 _response.Result = annuncio;
                 _response.StatusCode = HttpStatusCode.Created;
                 return Ok(_response);
-
-
-
-
             }
             catch (Exception ex)
             {
@@ -83,6 +82,7 @@ namespace SocialAPI.Controllers.v1
         }
 
         [Authorize(Roles = "admin")]
+        [SwaggerOperation(Summary = "API that allows to delete the ads (only for admin)", Description = "API that allows you to delete an advertisements.")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

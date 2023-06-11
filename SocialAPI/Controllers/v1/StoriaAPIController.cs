@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Text.Json;
 using System.Security.Claims;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SocialAPI.Controllers.v1
 {
@@ -35,6 +36,7 @@ namespace SocialAPI.Controllers.v1
         }
 
         [HttpGet("GetStoricoStorie")]
+        [SwaggerOperation(Summary = "API that allows you to take the history of your stories.")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -85,6 +87,7 @@ namespace SocialAPI.Controllers.v1
         }
 
         [HttpGet("GetStorieUtente")]
+        [SwaggerOperation(Summary = "API that allows to get all stories by a user")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -115,6 +118,7 @@ namespace SocialAPI.Controllers.v1
         }
 
         [HttpGet("GetStoriaById")]
+        [SwaggerOperation(Summary = "API that allows to get a story from id")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -143,6 +147,7 @@ namespace SocialAPI.Controllers.v1
         }
 
         [HttpGet("GetStorieUtentiSeguiti")]
+        [SwaggerOperation(Summary = "API that allows to get all stories from all followed users")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -209,6 +214,7 @@ namespace SocialAPI.Controllers.v1
 
         [Authorize]
         [HttpPost("CreaStoria")]
+        [SwaggerOperation(Summary = "API that allows to create new story")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -260,6 +266,7 @@ namespace SocialAPI.Controllers.v1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [SwaggerOperation(Summary = "API that allows to delete a story", Description = "must be your story")]
         [HttpDelete("EliminaStoria")]
         public async Task<ActionResult<APIResponse>> DeleteStoria(int id)
         {
@@ -311,6 +318,7 @@ namespace SocialAPI.Controllers.v1
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [SwaggerOperation(Summary = "API that allows to delete a story", Description = "Only admin")]
         [HttpDelete("EliminaStoriaAdmin")]
         public async Task<ActionResult<APIResponse>> DeleteStoriaAdmin(int id)
         {

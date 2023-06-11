@@ -13,6 +13,7 @@ using System.Text.Json;
 using System.Security.Claims;
 using System.Collections;
 using Microsoft.Extensions.Hosting;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SocialAPI.Controllers.v1
 {
@@ -42,6 +43,7 @@ namespace SocialAPI.Controllers.v1
             _response = new();
         }
         [HttpGet("GetLikeStoria")]
+        [SwaggerOperation(Summary = "API that allows to get the likes of a story")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -77,6 +79,7 @@ namespace SocialAPI.Controllers.v1
             return _response;
         }
         [HttpGet("GetLikePost")]
+        [SwaggerOperation(Summary = "API that allows to get the likes of a post")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -113,6 +116,7 @@ namespace SocialAPI.Controllers.v1
         }
 
         [HttpGet("GetLikeMessaggio")]
+        [SwaggerOperation(Summary = "API that allows to get the likes of a message")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -149,6 +153,7 @@ namespace SocialAPI.Controllers.v1
         }
 
         [HttpGet("GetLikeCommenti")]
+        [SwaggerOperation(Summary = "API that allows to get the likes of a comment")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -185,6 +190,7 @@ namespace SocialAPI.Controllers.v1
         }
        
         [Authorize]
+        [SwaggerOperation(Summary = "API that allows to create new like for a story")]
         [HttpPost("LikeStoria")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -242,6 +248,7 @@ namespace SocialAPI.Controllers.v1
             return _response;
         }
         [Authorize]
+        [SwaggerOperation(Summary = "API that allows to create new like for a post")]
         [HttpPost("LikePost")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -300,6 +307,7 @@ namespace SocialAPI.Controllers.v1
         }
 
         [Authorize]
+        [SwaggerOperation(Summary = "API that allows to create new like for a message")]
         [HttpPost("LikeMessaggio")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -359,6 +367,7 @@ namespace SocialAPI.Controllers.v1
 
 
         [Authorize]
+        [SwaggerOperation(Summary = "API that allows to create new like for a comment")]
         [HttpPost("LikeCommento")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -417,6 +426,7 @@ namespace SocialAPI.Controllers.v1
         }
 
         [Authorize]
+        [SwaggerOperation(Summary = "API that allows to delete a like of a story")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -469,6 +479,7 @@ namespace SocialAPI.Controllers.v1
 
 
         [Authorize]
+        [SwaggerOperation(Summary = "API that allows to delete a like of a message")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -521,6 +532,7 @@ namespace SocialAPI.Controllers.v1
 
 
         [Authorize]
+        [SwaggerOperation(Summary = "API that allows to delete a like of a post")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -571,6 +583,7 @@ namespace SocialAPI.Controllers.v1
             return _response;
         }
         [Authorize]
+        [SwaggerOperation(Summary = "API that allows to delete a like of a comment")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SocialAPI.Controllers
 {
@@ -32,6 +33,7 @@ namespace SocialAPI.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [SwaggerOperation(Summary = "API that allows to get a user from a token")]
         public async Task<ActionResult<APIResponse>> GetUtenteByToken()
         {
             try
@@ -68,6 +70,7 @@ namespace SocialAPI.Controllers
             return _response;
         }
         [HttpGet("GetUtenteByUser")]
+        [SwaggerOperation(Summary = "API that allows to get a user from a username")]
         [ResponseCache(CacheProfileName = "Default30")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -140,6 +143,7 @@ namespace SocialAPI.Controllers
         }
         [HttpGet("GetUtenteBySearch")]
         [ResponseCache(CacheProfileName = "Default30")]
+        [SwaggerOperation(Summary = "API that allows you to obtain usernames given a keyword", Description = "It uses an algorithm that sorts words by the number of changes they must make to arrive at the search word. Also, the words shown must contain the search word.")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -180,6 +184,7 @@ namespace SocialAPI.Controllers
         }
         [Authorize(Roles = "admin")]
         [HttpDelete("DeleteUserFromIdAdmin")]
+        [SwaggerOperation(Summary = "API that allows to delete user from id", Description ="Only admin")]
         [ResponseCache(CacheProfileName = "Default30")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -224,6 +229,7 @@ namespace SocialAPI.Controllers
         }
         [Authorize]
         [HttpDelete("DeleteUserFromToken")]
+        [SwaggerOperation(Summary = "API that allows to delete a user from a token")]
         [ResponseCache(CacheProfileName = "Default30")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -282,6 +288,7 @@ namespace SocialAPI.Controllers
 
         [Authorize]
         [HttpPut("AggiornaFotoProfilo")]
+        [SwaggerOperation(Summary = "API that allows to update the profile picture")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<APIResponse>> AggiornaFotoProfilo(string fotoProfilo)
