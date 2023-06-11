@@ -47,7 +47,7 @@ builder.Services.AddVersionedApiExplorer(options =>
 });
 builder.Services.AddCors(p => p.AddPolicy("corspolicy", build =>
 {
-    build.WithOrigins("https://localhost:5173", "http://localhost:5173", "http://127.0.0.1:5173", "http://127.0.0.1:5503", "https://localhost:5503", "http://localhost:5503","https://gray-sea-0ae5fe703.3.azurestaticapps.net").AllowAnyMethod().AllowAnyHeader();
+    build.WithOrigins("https://black-glacier-0ca976c03.3.azurestaticapps.net").AllowAnyMethod().AllowAnyHeader();
 }));
 
 var key = builder.Configuration.GetValue<string>("ApiSettings:Secret");
