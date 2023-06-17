@@ -372,6 +372,24 @@ namespace SocialAPI.Controllers.v1
                             {
                                 return NotFound();
                             }
+                            List<Like> likes = await _dblike.GetAllAsync(l => l.fk_post == id);
+                            List<Commento> commenti = await _dbcommenti.GetAllAsync(c => c.fk_post == id);
+                            if (likes!=null)
+                            {
+                                foreach (var item in likes)
+                                {
+                                    await _dblike.RemoveAsync(item);
+                                }
+                               
+                            }
+                            if (commenti != null)
+                            {
+                                foreach (var item in commenti)
+                                {
+                                    await _dbcommenti.RemoveAsync(item);
+                                }
+
+                            }
                             await _dbPost.RemoveAsync(post);
                             _response.StatusCode = HttpStatusCode.NoContent;
                             _response.IsSuccess = true;
